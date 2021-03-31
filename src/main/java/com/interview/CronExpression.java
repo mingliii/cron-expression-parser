@@ -44,7 +44,7 @@ public class CronExpression {
         }
     };
 
-    private final Map<FIELD_TYPE, int[]> parsedFields = new HashMap<>(6);
+    private final Map<FIELD_TYPE, String[]> parsedFields = new HashMap<>(6);
     private String command;
     private final String expression;
 
@@ -64,7 +64,7 @@ public class CronExpression {
     private void buildExpression(String expression) {
         String[] fields = expression.split(" ");
         if (fields.length != 6) {
-            throw new InvalidExpressionException(expression, "Missing field(s)");
+            throw new InvalidExpressionException(expression, "The number of fields should be 6, given: " + fields.length);
         }
 
         for (int type = 0; type < fields.length; type++) {
@@ -80,9 +80,9 @@ public class CronExpression {
 
         // Match all values given field type
         if (Objects.equals(field, "*")) {
-            int[] range = VALUES_MAP.get(fieldType);
+            String[] range = Arrays.stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
             if (fieldType != MINUTE && fieldType != HOUR) { // index needs to start from 1
-                range = Arrays.copyOfRange(VALUES_MAP.get(fieldType), 1, range.length);
+                range = Arrays.copyOfRange(range, 1, range.length);
             }
 
             parsedFields.put(fieldType, range);
@@ -121,7 +121,7 @@ public class CronExpression {
         }
 
         try {
-            parsedFields.put(fieldType, new int[]{Integer.parseInt(field)});
+            parsedFields.put(fieldType, new String[]{field});
         } catch (Exception e) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
         }
@@ -129,7 +129,7 @@ public class CronExpression {
 
     // Parse filed like 1-5, 2-10
     private void parseRange(String field, FIELD_TYPE fieldType) {
-        final int[] values = VALUES_MAP.get(fieldType);
+        final String[] values = Arrays.stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
         if (startEnd.length != 2) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field));
@@ -177,7 +177,7 @@ public class CronExpression {
                 results.add(mark);
             }
 
-            parsedFields.put(fieldType, results.stream().mapToInt(i -> i).toArray());
+            parsedFields.put(fieldType, results.stream().map(String::valueOf).toArray(String[]::new));
         } catch (Exception e) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
         }
@@ -186,7 +186,7 @@ public class CronExpression {
     // Parse field like 1,2,3,4,5
     private void parseList(String field, FIELD_TYPE fieldType) {
         try {
-            int[] values = Arrays.stream(field.split(",")).mapToInt(val -> VALUES_MAP.get(fieldType)[Integer.parseInt(val)]).toArray();
+            String[] values = field.split(",");
             parsedFields.put(fieldType, values);
         } catch (Exception e) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
@@ -194,12 +194,12 @@ public class CronExpression {
     }
 
     public String describe() {
-        String minutes     = "minute        " + join(" ", Arrays.stream(getMinutes()).mapToObj(String::valueOf).toArray(String[]::new));
-        String hours       = "hour          " + join(" ", Arrays.stream(getHours()).mapToObj(String::valueOf).toArray(String[]::new));
-        String daysOfMonth = "day of month  " + join(" ", Arrays.stream(getDaysOfMonth()).mapToObj(String::valueOf).toArray(String[]::new));
-        String months      = "month         " + join(" ", Arrays.stream(getMonths()).mapToObj(String::valueOf).toArray(String[]::new));
-        String daysOfWeek  = "day of week   " + join(" ", Arrays.stream(getDaysOfWeek()).mapToObj(String::valueOf).toArray(String[]::new));
-        String commandStr  = "command       " + command;
+        String minutes     = "minute         " + join(" ", getMinutes());
+        String hours       = "hour           " + join(" ", getHours());
+        String daysOfMonth = "day of month   " + join(" ", getDaysOfMonth());
+        String months      = "month          " + join(" ", getMonths());
+        String daysOfWeek  = "day of week    " + join(" ", getDaysOfWeek());
+        String commandStr  = "command        " + command;
         return join("\n", List.of(minutes, hours, daysOfMonth, months, daysOfWeek, commandStr));
     }
 
@@ -207,28 +207,28 @@ public class CronExpression {
         return format("The field '%s' is not valid", field);
     }
 
-    public int[] getMinutes() {
+    public String[] getMinutes() {
         return parsedFields.get(MINUTE);
     }
 
-    public int[] getHours() {
+    public String[] getHours() {
         return parsedFields.get(HOUR);
     }
 
-    public int[] getDaysOfMonth() {
+    public String[] getDaysOfMonth() {
         return parsedFields.get(DAY_OF_MONTH);
     }
 
-    public int[] getMonths() {
+    public String[] getMonths() {
         return parsedFields.get(MONTH);
     }
 
-    public int[] getDaysOfWeek() {
+    public String[] getDaysOfWeek() {
         return parsedFields.get(DAY_OF_WEEK);
     }
 
     public static void main(String[] args) {
-        CronExpression cronExpression = new CronExpression("*/45 0 1,15 * 1-5 /usr/bin/find");
+        CronExpression cronExpression = new CronExpression("*/45 0 1,2,15 * 1-5 /usr/bin/find");
         String output = cronExpression.describe();
         System.out.println(output);
     }
