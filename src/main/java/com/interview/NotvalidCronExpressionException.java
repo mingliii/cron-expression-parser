@@ -1,12 +1,12 @@
 package com.interview;
 
-public class InvalidExpressionException extends RuntimeException{
+public class NotvalidCronExpressionException extends RuntimeException{
 
-    public InvalidExpressionException(String expression, String reason, Exception e) {
+    public NotvalidCronExpressionException(String expression, String reason, Exception e) {
         super(errorMsg(expression, reason), e);
     }
 
-    public InvalidExpressionException(String expression, String reason) {
+    public NotvalidCronExpressionException(String expression, String reason) {
         super(errorMsg(expression, reason));
     }
 

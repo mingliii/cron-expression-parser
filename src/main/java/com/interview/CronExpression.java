@@ -65,7 +65,7 @@ public class CronExpression {
     private void buildExpression(String expression) {
         String[] fields = expression.split(" ");
         if (fields.length != 6) {
-            throw new InvalidExpressionException(expression, "The number of fields should be 6, given: " + fields.length);
+            throw new NotvalidCronExpressionException(expression, "The number of fields should be 6, given: " + fields.length);
         }
 
         for (int type = 0; type < fields.length; type++) {
@@ -124,7 +124,7 @@ public class CronExpression {
         try {
             parsedFields.put(fieldType, new String[]{String.valueOf(Integer.parseInt(field))});
         } catch (NumberFormatException e) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
+            throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field), e);
         }
     }
 
@@ -133,7 +133,7 @@ public class CronExpression {
         final String[] values = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
         if (startEnd.length != 2) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+            throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
         }
 
         try {
@@ -141,7 +141,7 @@ public class CronExpression {
             int end = Integer.parseInt(startEnd[1]);
             parsedFields.put(fieldType, copyOfRange(values, start, end + 1));
         } catch (NumberFormatException e) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+            throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
         }
     }
 
@@ -150,14 +150,14 @@ public class CronExpression {
         final int[] values = VALUES_MAP.get(fieldType);
         final String[] startEnd = field.split("/");
         if (startEnd.length != 2) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+            throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
         }
 
         try {
             int start = Objects.equals(startEnd[0], "*") ? 0 : Integer.parseInt(startEnd[0]);
             int interval = Integer.parseInt(startEnd[1]);
             if (start > values[values.length - 1] || interval < 1) {
-                throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+                throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
             }
 
             int mod = (fieldType == MINUTE || fieldType == HOUR) ? values.length : values.length - 1;
@@ -180,7 +180,7 @@ public class CronExpression {
 
             parsedFields.put(fieldType, results.stream().map(String::valueOf).toArray(String[]::new));
         } catch (Exception e) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
+            throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field), e);
         }
     }
 
@@ -190,7 +190,7 @@ public class CronExpression {
             String[] values = field.split(",");
             parsedFields.put(fieldType, stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new));
         } catch (NumberFormatException e) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
+            throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field), e);
         }
     }
 
