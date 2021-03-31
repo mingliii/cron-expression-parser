@@ -10,7 +10,7 @@ public class CronExpression {
 
     // days in week - ignore the first one
     private static final int[] _DAYS_OF_WEEK = new int[8];
-    private static final String[] _WEEK_BY_NAME = new String[]{null, "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+
     // 12 months - ignore the first one
     private static final int[] _MONTHS = new int[13];
     // 31 days in month - ignore the first one
