@@ -10,7 +10,7 @@ public class CronExpression {
 
     // days in week - ignore the first one
     private static final int[] _DAYS_OF_WEEK = new int[8];
-    private static final String[] _WEEK_BY_NAME = new String[]{null, "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+    private static final String[] _DAYS_OF_WEEK_BY_NAME = new String[]{null, "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
     // 12 months - ignore the first one
     private static final int[] _MONTHS = new int[13];
     // 31 days in month - ignore the first one
@@ -141,7 +141,17 @@ public class CronExpression {
             int end = Integer.parseInt(startEnd[1]);
             parsedFields.put(fieldType, copyOfRange(values, start, end + 1));
         } catch (NumberFormatException e) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+            List<String> daysOfWeekByName = asList(_DAYS_OF_WEEK_BY_NAME);
+            if (daysOfWeekByName.contains(startEnd[0].toUpperCase()) && daysOfWeekByName.contains(startEnd[1].toUpperCase())) {
+                int start = daysOfWeekByName.indexOf(startEnd[0]);
+                int end = daysOfWeekByName.indexOf(startEnd[1]);
+                if (start > end) {
+                    throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+                }
+                parsedFields.put(fieldType, copyOfRange(_DAYS_OF_WEEK_BY_NAME, start, end + 1));
+            } else {
+                throw new InvalidExpressionException(expression, fieldErrorMsg(field));
+            }
         }
     }
 
@@ -186,11 +196,15 @@ public class CronExpression {
 
     // Parse field like 1,2,3,4,5
     private void parseList(String field, FIELD_TYPE fieldType) {
+        String[] values = field.split(",");
         try {
-            String[] values = field.split(",");
             parsedFields.put(fieldType, stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new));
         } catch (NumberFormatException e) {
-            throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
+            if (stream(values).allMatch(val -> asList(_DAYS_OF_WEEK_BY_NAME).contains(val))) {
+                parsedFields.put(fieldType, values);
+            } else {
+                throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
+            }
         }
     }
 
@@ -229,7 +243,8 @@ public class CronExpression {
     }
 
     public static void main(String[] args) {
-        CronExpression cronExpression = new CronExpression("*/45 0 1,2,15 * 1-5 /usr/bin/find");
+//        CronExpression cronExpression = new CronExpression("*/45 0 1,2,15 * 1-5 /usr/bin/find");
+        CronExpression cronExpression = new CronExpression("*/45 0 1,2,15 * WED-SAT /usr/bin/find");
         String output = cronExpression.describe();
         System.out.println(output);
     }
