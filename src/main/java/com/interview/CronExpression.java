@@ -4,6 +4,7 @@ import java.util.*;
 
 import static com.interview.CronExpression.FIELD_TYPE.*;
 import static java.lang.String.*;
+import static java.util.Arrays.*;
 
 public class CronExpression {
 
@@ -80,9 +81,9 @@ public class CronExpression {
 
         // Match all values given field type
         if (Objects.equals(field, "*")) {
-            String[] range = Arrays.stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
+            String[] range = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
             if (fieldType != MINUTE && fieldType != HOUR) { // index needs to start from 1
-                range = Arrays.copyOfRange(range, 1, range.length);
+                range = copyOfRange(range, 1, range.length);
             }
 
             parsedFields.put(fieldType, range);
@@ -121,15 +122,15 @@ public class CronExpression {
         }
 
         try {
-            parsedFields.put(fieldType, new String[]{field});
-        } catch (Exception e) {
+            parsedFields.put(fieldType, new String[]{String.valueOf(Integer.parseInt(field))});
+        } catch (NumberFormatException e) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
         }
     }
 
     // Parse filed like 1-5, 2-10
     private void parseRange(String field, FIELD_TYPE fieldType) {
-        final String[] values = Arrays.stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
+        final String[] values = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
         if (startEnd.length != 2) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field));
@@ -138,8 +139,8 @@ public class CronExpression {
         try {
             int start = Integer.parseInt(startEnd[0]);
             int end = Integer.parseInt(startEnd[1]);
-            parsedFields.put(fieldType, Arrays.copyOfRange(values, start, end + 1));
-        } catch (Exception e) {
+            parsedFields.put(fieldType, copyOfRange(values, start, end + 1));
+        } catch (NumberFormatException e) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field));
         }
     }
@@ -187,8 +188,8 @@ public class CronExpression {
     private void parseList(String field, FIELD_TYPE fieldType) {
         try {
             String[] values = field.split(",");
-            parsedFields.put(fieldType, values);
-        } catch (Exception e) {
+            parsedFields.put(fieldType, stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new));
+        } catch (NumberFormatException e) {
             throw new InvalidExpressionException(expression, fieldErrorMsg(field), e);
         }
     }
