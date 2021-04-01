@@ -25,28 +25,33 @@ public class ListParserTest {
     }
 
     @Test
-    public void doParse() {
+    public void parse() {
 
         String[] expected;
 
         expected = new String[]{"1", "5", "10"};
-        Assert.assertArrayEquals(expected, listParser.doParse("1,  5,10", MINUTE));
+        Assert.assertArrayEquals(expected, listParser.parse("1,  5,10", MINUTE));
 
         expected = new String[]{"0", "5", "23"};
-        Assert.assertArrayEquals(expected, listParser.doParse("0,5,23", HOUR));
+        Assert.assertArrayEquals(expected, listParser.parse("0,5,23", HOUR));
 
         expected = new String[]{"1", "5", "31"};
-        Assert.assertArrayEquals(expected, listParser.doParse("1, 5, 31", DAY_OF_MONTH));
+        Assert.assertArrayEquals(expected, listParser.parse("1, 5, 31", DAY_OF_MONTH));
 
         expected = new String[]{"1", "5", "12"};
-        Assert.assertArrayEquals(expected, listParser.doParse("1, 5, 12", MONTH));
+        Assert.assertArrayEquals(expected, listParser.parse("1, 5, 12", MONTH));
 
         expected = new String[]{"1", "5", "7"};
-        Assert.assertArrayEquals(expected, listParser.doParse("1, 5, 7", DAY_OF_WEEK));
+        Assert.assertArrayEquals(expected, listParser.parse("1, 5, 7", DAY_OF_WEEK));
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalid_ExceedRange() {
-        listParser.doParse("0, 5, 31", DAY_OF_MONTH);
+        listParser.parse("0, 5, 31", DAY_OF_MONTH);
+    }
+
+    @Test(expected = NotValidCronExpressionException.class)
+    public void testParseInvalid_InvalidCharacter() {
+        listParser.parse("0, 5, a", DAY_OF_MONTH);
     }
 }

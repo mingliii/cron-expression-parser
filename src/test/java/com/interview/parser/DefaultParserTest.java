@@ -29,37 +29,37 @@ public class DefaultParserTest {
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalid() {
-        defaultParser.doParse("a", MINUTE);
+        defaultParser.parse("a", MINUTE);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalid_ExceedRange_Minute() {
-        defaultParser.doParse("60", MINUTE);
+        defaultParser.parse("60", MINUTE);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalid_ExceedRange_Hour() {
-        defaultParser.doParse("13", MONTH);
+        defaultParser.parse("13", MONTH);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalid_BelowRange_Day_Of_Month() {
-        defaultParser.doParse("0", DAY_OF_MONTH);
+        defaultParser.parse("0", DAY_OF_MONTH);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalid_BelowRange_Month() {
-        defaultParser.doParse("0", MONTH);
+        defaultParser.parse("0", MONTH);
     }
 
     @Test
     public void testParseSuccess() {
         String[] expected = new String[]{"7"};
 
-        Assert.assertArrayEquals(expected, defaultParser.doParse("7", MINUTE));
-        Assert.assertArrayEquals(expected, defaultParser.doParse("7", HOUR));
-        Assert.assertArrayEquals(expected, defaultParser.doParse("7", DAY_OF_MONTH));
-        Assert.assertArrayEquals(expected, defaultParser.doParse("7", MONTH));
-        Assert.assertArrayEquals(expected, defaultParser.doParse("7", DAY_OF_WEEK));
+        Assert.assertArrayEquals(expected, defaultParser.parse("7", MINUTE));
+        Assert.assertArrayEquals(expected, defaultParser.parse("7", HOUR));
+        Assert.assertArrayEquals(expected, defaultParser.parse("7", DAY_OF_MONTH));
+        Assert.assertArrayEquals(expected, defaultParser.parse("7", MONTH));
+        Assert.assertArrayEquals(expected, defaultParser.parse("7", DAY_OF_WEEK));
     }
 }

@@ -25,7 +25,7 @@ public class CommandParserTest {
     @Test
     public void testParse() {
         String[] expected = new String[]{"any"};
-        String[] actual = commandParser.doParse("any", COMMAND);
+        String[] actual = commandParser.parse("any", COMMAND);
 
         Assert.assertArrayEquals(expected, actual);
     }

@@ -32,27 +32,27 @@ public class QuestionMarkParserTest {
 
     @Test
     public void testParseSuccess() {
-        Assert.assertArrayEquals(new String[]{}, questionMarkParser.doParse("?", DAY_OF_WEEK));
-        Assert.assertArrayEquals(new String[]{}, questionMarkParser.doParse("?", DAY_OF_MONTH));
+        Assert.assertArrayEquals(new String[]{}, questionMarkParser.parse("?", DAY_OF_WEEK));
+        Assert.assertArrayEquals(new String[]{}, questionMarkParser.parse("?", DAY_OF_MONTH));
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Minute() {
-        questionMarkParser.doParse("?", MINUTE);
+        questionMarkParser.parse("?", MINUTE);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Hour() {
-        questionMarkParser.doParse("?", HOUR);
+        questionMarkParser.parse("?", HOUR);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Month() {
-        questionMarkParser.doParse("?", MONTH);
+        questionMarkParser.parse("?", MONTH);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Command() {
-        questionMarkParser.doParse("?", COMMAND);
+        questionMarkParser.parse("?", COMMAND);
     }
 }

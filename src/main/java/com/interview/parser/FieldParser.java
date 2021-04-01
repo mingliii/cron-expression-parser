@@ -90,8 +90,4 @@ public abstract class FieldParser {
     String fieldErrorMsg(String field) {
         return format("The field '%s' is not valid", field);
     }
-
-    public void setRangeValidator(RangeValidator rangeValidator) {
-        this.rangeValidator = rangeValidator;
-    }
 }

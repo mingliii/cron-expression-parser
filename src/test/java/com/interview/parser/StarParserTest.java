@@ -38,35 +38,35 @@ public class StarParserTest {
         for (int i = 0; i < 60; i++) {
             expected[i] = String.valueOf(i);
         }
-        String[] minutes = starParser.doParse("*", MINUTE);
+        String[] minutes = starParser.parse("*", MINUTE);
         Assert.assertArrayEquals(expected, minutes);
 
         expected = new String[24];
         for (int i = 0; i < 24; i++) {
             expected[i] = String.valueOf(i);
         }
-        String[] hours = starParser.doParse("*", HOUR);
+        String[] hours = starParser.parse("*", HOUR);
         Assert.assertArrayEquals(expected, hours);
 
         expected = new String[31];
         for (int i = 0; i < 31; i++) {
             expected[i] = String.valueOf(i + 1);
         }
-        String[] daysOfMonth = starParser.doParse("*", DAY_OF_MONTH);
+        String[] daysOfMonth = starParser.parse("*", DAY_OF_MONTH);
         Assert.assertArrayEquals(expected, daysOfMonth);
 
         expected = new String[12];
         for (int i = 0; i < 12; i++) {
             expected[i] = String.valueOf(i + 1);
         }
-        String[] months = starParser.doParse("*", MONTH);
+        String[] months = starParser.parse("*", MONTH);
         Assert.assertArrayEquals(expected, months);
 
         expected = new String[7];
         for (int i = 0; i < 7; i++) {
             expected[i] = String.valueOf(i + 1);
         }
-        String[] daysOfWeek = starParser.doParse("*", DAY_OF_WEEK);
+        String[] daysOfWeek = starParser.parse("*", DAY_OF_WEEK);
         Assert.assertArrayEquals(expected, daysOfWeek);
     }
 }
