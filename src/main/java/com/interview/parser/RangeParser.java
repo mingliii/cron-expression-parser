@@ -1,13 +1,11 @@
 package com.interview.parser;
 
-import com.interview.NotvalidCronExpressionException;
+import com.interview.NotValidCronExpressionException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.interview.parser.FieldParser.FieldType.HOUR;
-import static com.interview.parser.FieldParser.FieldType.MINUTE;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Arrays.stream;
 
@@ -24,7 +22,7 @@ public class RangeParser extends FieldParser {
         String[] startEnd = field.split("-");
 
         if (startEnd.length != 2) {
-            throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+            throw new NotValidCronExpressionException(fieldErrorMsg(field));
         }
 
 
@@ -33,7 +31,7 @@ public class RangeParser extends FieldParser {
             int end = Integer.parseInt(startEnd[1]);
 
             if (stream(values).noneMatch(val -> Integer.parseInt(val) == start) || stream(values).noneMatch(val -> Integer.parseInt(val) == end)) {
-                throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+                throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
             // Handle the case like 23-2
@@ -46,7 +44,7 @@ public class RangeParser extends FieldParser {
 
             return copyOfRange(values, start, end + 1);
         } catch (NumberFormatException e) {
-            throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+            throw new NotValidCronExpressionException(fieldErrorMsg(field));
         }
     }
 }

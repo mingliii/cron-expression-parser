@@ -1,11 +1,10 @@
 package com.interview.parser;
 
-import com.interview.NotvalidCronExpressionException;
+import com.interview.NotValidCronExpressionException;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static com.interview.parser.FieldParser.FieldType.*;
-import static org.junit.Assert.*;
 
 /**
  * @author Ming Li
@@ -37,22 +36,22 @@ public class QuestionMarkParserTest {
         Assert.assertArrayEquals(new String[]{}, questionMarkParser.doParse("?", DAY_OF_MONTH));
     }
 
-    @Test(expected = NotvalidCronExpressionException.class)
+    @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Minute() {
         questionMarkParser.doParse("?", MINUTE);
     }
 
-    @Test(expected = NotvalidCronExpressionException.class)
+    @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Hour() {
         questionMarkParser.doParse("?", HOUR);
     }
 
-    @Test(expected = NotvalidCronExpressionException.class)
+    @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Month() {
         questionMarkParser.doParse("?", MONTH);
     }
 
-    @Test(expected = NotvalidCronExpressionException.class)
+    @Test(expected = NotValidCronExpressionException.class)
     public void testParseFail_Command() {
         questionMarkParser.doParse("?", COMMAND);
     }

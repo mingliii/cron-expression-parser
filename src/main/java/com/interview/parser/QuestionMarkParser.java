@@ -1,10 +1,11 @@
 package com.interview.parser;
 
-import com.interview.NotvalidCronExpressionException;
+import com.interview.NotValidCronExpressionException;
 
 import java.util.Objects;
 
-import static com.interview.parser.FieldParser.FieldType.*;
+import static com.interview.parser.FieldParser.FieldType.DAY_OF_MONTH;
+import static com.interview.parser.FieldParser.FieldType.DAY_OF_WEEK;
 
 public class QuestionMarkParser extends FieldParser {
 
@@ -19,6 +20,6 @@ public class QuestionMarkParser extends FieldParser {
             return new String[0];
         }
 
-        throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+        throw new NotValidCronExpressionException(fieldErrorMsg(field));
     }
 }

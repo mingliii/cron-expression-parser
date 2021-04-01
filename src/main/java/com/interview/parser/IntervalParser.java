@@ -1,6 +1,6 @@
 package com.interview.parser;
 
-import com.interview.NotvalidCronExpressionException;
+import com.interview.NotValidCronExpressionException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class IntervalParser extends FieldParser {
         final String[] startEnd = field.split("/");
 
         if (startEnd.length != 2) {
-            throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+            throw new NotValidCronExpressionException(fieldErrorMsg(field));
         }
 
         try {
@@ -30,13 +30,13 @@ public class IntervalParser extends FieldParser {
             } else {
                 start = Integer.parseInt(startEnd[0]);
                 if (Arrays.stream(range).noneMatch(val -> val == start)) {
-                    throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+                    throw new NotValidCronExpressionException(fieldErrorMsg(field));
                 }
             }
 
             int interval = Integer.parseInt(startEnd[1]);
             if (start > range[range.length - 1] || interval < 1) {
-                throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+                throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
             int mod = range.length;
@@ -62,7 +62,7 @@ public class IntervalParser extends FieldParser {
 
             return results.stream().map(String::valueOf).toArray(String[]::new);
         } catch (Exception e) {
-            throw new NotvalidCronExpressionException(fieldErrorMsg(field), e);
+            throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }
     }
 }

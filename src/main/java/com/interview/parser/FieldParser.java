@@ -1,12 +1,17 @@
 package com.interview.parser;
 
+import com.interview.validator.RangeValidator;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.interview.parser.FieldParser.FieldType.*;
 import static java.lang.String.format;
 
 public abstract class FieldParser {
+
+    protected RangeValidator rangeValidator = new RangeValidator();
 
     // days in week - ignore the first one
     private static final int[] _DAYS_OF_WEEK = new int[7];
@@ -18,6 +23,8 @@ public abstract class FieldParser {
     private static final int[] _HOURS = new int[24];
     // 60 minutes in an hour
     private static final int[] _MINUTES = new int[60];
+
+    protected static final List<String> SPECIAL_CHARACTERS = List.of(",", "-", "?", "/", "*");
 
     static {
         init(1, _DAYS_OF_WEEK, _MONTHS, _DAYS_OF_MONTH);
@@ -82,5 +89,9 @@ public abstract class FieldParser {
 
     String fieldErrorMsg(String field) {
         return format("The field '%s' is not valid", field);
+    }
+
+    public void setRangeValidator(RangeValidator rangeValidator) {
+        this.rangeValidator = rangeValidator;
     }
 }

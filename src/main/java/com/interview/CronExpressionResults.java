@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.interview.parser.FieldParser.FieldType.*;
-import static com.interview.parser.FieldParser.FieldType.MINUTE;
 import static java.lang.String.join;
 
 public class CronExpressionResults {

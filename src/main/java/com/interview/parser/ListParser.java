@@ -1,14 +1,15 @@
 package com.interview.parser;
 
-import com.interview.NotvalidCronExpressionException;
+import com.interview.NotValidCronExpressionException;
 
+import static com.interview.parser.FieldParser.FieldType.COMMAND;
 import static java.util.Arrays.stream;
 
 public class ListParser extends FieldParser {
 
     @Override
     public boolean match(String field, FieldType fieldType) {
-        return field.contains(",");
+        return field.contains(",") && fieldType != COMMAND;
     }
 
     @Override
@@ -16,15 +17,15 @@ public class ListParser extends FieldParser {
         try {
             int[] range = VALUES_MAP.get(fieldType);
             String[] values = field.split(",");
-            values = stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new);
+            values = stream(values).mapToInt(val -> Integer.parseInt(val.trim())).distinct().mapToObj(String::valueOf).toArray(String[]::new);
 
             if (!stream(values).allMatch(s -> stream(range).anyMatch(val -> Integer.parseInt(s) == val))) {
-                throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+                throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
-            return stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new);
+            return values;
         } catch (NumberFormatException e) {
-            throw new NotvalidCronExpressionException(fieldErrorMsg(field), e);
+            throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }
     }
 }
