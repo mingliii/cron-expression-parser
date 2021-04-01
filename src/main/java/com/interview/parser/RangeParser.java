@@ -18,7 +18,8 @@ public class RangeParser extends FieldParser {
 
     @Override
     public String[] doParse(String field, FieldType fieldType) {
-        final String[] values = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
+        int[] range = VALUES_MAP.get(fieldType);
+        final String[] values = stream(range).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
 
         if (startEnd.length != 2) {
@@ -27,22 +28,23 @@ public class RangeParser extends FieldParser {
 
 
         try {
+            int offset = values[0].equals("0") ? 0 : 1;
             int start = Integer.parseInt(startEnd[0]);
             int end = Integer.parseInt(startEnd[1]);
 
-            if (stream(values).noneMatch(val -> Integer.parseInt(val) == start) || stream(values).noneMatch(val -> Integer.parseInt(val) == end)) {
+            if (!rangeValidator.validate(range, start, end)) {
                 throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
             // Handle the case like 23-2
             if (start > end) {
-                List<String> results = new ArrayList<>(Arrays.asList(copyOfRange(values, start, values.length)));
-                List<String> rest = new ArrayList<>(Arrays.asList(copyOfRange(values, 0, end + 1)));
+                List<String> results = new ArrayList<>(Arrays.asList(copyOfRange(values, start - offset, values.length)));
+                List<String> rest = new ArrayList<>(Arrays.asList(copyOfRange(values, 0, end + 1 - offset)));
                 results.addAll(rest);
                 return  results.toArray(String[]::new);
             }
 
-            return copyOfRange(values, start, end + 1);
+            return copyOfRange(values, start - offset, end + 1 - offset);
         } catch (NumberFormatException e) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field));
         }
