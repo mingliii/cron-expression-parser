@@ -16,9 +16,9 @@ public class ListParser extends FieldParser {
         try {
             int[] range = VALUES_MAP.get(fieldType);
             String[] values = field.split(",");
-            String[] results = stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new);
+            values = stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new);
 
-            if (!stream(results).allMatch(s -> stream(range).anyMatch(val -> Integer.parseInt(s) == val))) {
+            if (!stream(values).allMatch(s -> stream(range).anyMatch(val -> Integer.parseInt(s) == val))) {
                 throw new NotvalidCronExpressionException(fieldErrorMsg(field));
             }
 

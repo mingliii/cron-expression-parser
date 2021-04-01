@@ -27,13 +27,12 @@ public class RangeParser extends FieldParser {
             throw new NotvalidCronExpressionException(fieldErrorMsg(field));
         }
 
-        int offset = (fieldType == MINUTE || fieldType == HOUR) ? 0 : 1;
 
         try {
-            int start = Integer.parseInt(startEnd[0]) - offset;
-            int end = Integer.parseInt(startEnd[1]) - offset;
+            int start = Integer.parseInt(startEnd[0]);
+            int end = Integer.parseInt(startEnd[1]);
 
-            if (start < 0 || start >= values.length || end >= values.length) {
+            if (stream(values).noneMatch(val -> Integer.parseInt(val) == start) || stream(values).noneMatch(val -> Integer.parseInt(val) == end)) {
                 throw new NotvalidCronExpressionException(fieldErrorMsg(field));
             }
 
