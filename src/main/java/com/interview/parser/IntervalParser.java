@@ -3,6 +3,7 @@ package com.interview.parser;
 import com.interview.NotvalidCronExpressionException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,16 @@ public class IntervalParser extends FieldParser {
         }
 
         try {
-            int start = Objects.equals(startEnd[0], "*") ? 0 : Integer.parseInt(startEnd[0]);
+            int start;
+            if (Objects.equals(startEnd[0], "*")) {
+                start = range[0];
+            } else {
+                start = Integer.parseInt(startEnd[0]);
+                if (Arrays.stream(range).noneMatch(val -> val == start)) {
+                    throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+                }
+            }
+
             int interval = Integer.parseInt(startEnd[1]);
             if (start > range[range.length - 1] || interval < 1) {
                 throw new NotvalidCronExpressionException(fieldErrorMsg(field));
