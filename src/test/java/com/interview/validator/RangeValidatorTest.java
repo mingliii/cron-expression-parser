@@ -19,6 +19,7 @@ public class RangeValidatorTest {
 
         Assert.assertFalse(rangeValidator.validate(months, 0));
         Assert.assertFalse(rangeValidator.validate(months, 13));
-        Assert.assertFalse(rangeValidator.validate(months, 1, 4, 8, 13));
+        Assert.assertFalse(rangeValidator.validate(months, 13));
+        Assert.assertFalse(rangeValidator.validate(months));
     }
 }
