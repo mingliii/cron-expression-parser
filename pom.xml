@@ -80,7 +80,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>com.interview.CronExpression</mainClass>
+              <mainClass>com.interview.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

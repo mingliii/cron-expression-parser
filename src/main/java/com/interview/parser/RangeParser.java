@@ -1,27 +1,28 @@
 package com.interview.parser;
 
-import com.interview.CronExpression;
-import com.interview.CronExpression.FieldType;
 import com.interview.NotvalidCronExpressionException;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.interview.CronExpression.FieldType.HOUR;
-import static com.interview.CronExpression.FieldType.MINUTE;
+import static com.interview.parser.FieldParser.FieldType.HOUR;
+import static com.interview.parser.FieldParser.FieldType.MINUTE;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Arrays.stream;
 
-public class RangeParser implements Parser {
+public class RangeParser extends FieldParser {
 
     @Override
-    public boolean match(String field) {
+    public boolean match(String field, FieldType fieldType) {
         return field.contains("-");
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType,  int[] range) {
-        final String[] values = stream(range).mapToObj(String::valueOf).toArray(String[]::new);
+    public String[] parse(String field, FieldType fieldType) {
+        final String[] values = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
+
         if (startEnd.length != 2) {
             throw new NotvalidCronExpressionException(fieldErrorMsg(field));
         }
@@ -32,8 +33,16 @@ public class RangeParser implements Parser {
             int start = Integer.parseInt(startEnd[0]) - offset;
             int end = Integer.parseInt(startEnd[1]) - offset;
 
-            if (start > end || start < 0 || end >= range.length) {
+            if (start < 0 || start >= values.length || end >= values.length) {
                 throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+            }
+
+            // Handle the case like 23-2
+            if (start > end) {
+                List<String> results = new ArrayList<>(Arrays.asList(copyOfRange(values, start, values.length)));
+                List<String> rest = new ArrayList<>(Arrays.asList(copyOfRange(values, 0, end + 1)));
+                results.addAll(rest);
+                return  results.toArray(String[]::new);
             }
 
             return copyOfRange(values, start, end + 1);

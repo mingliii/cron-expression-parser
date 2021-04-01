@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.interview.CronExpression.FieldType;
-
-public class IntervalParser implements Parser{
+public class IntervalParser extends FieldParser {
 
     @Override
-    public boolean match(String field) {
+    public boolean match(String field, FieldType fieldType) {
         return field.contains("/");
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType, int[] range) {
+    public String[] parse(String field, FieldType fieldType) {
+        int[] range = VALUES_MAP.get(fieldType);
         final String[] startEnd = field.split("/");
 
         if (startEnd.length != 2) {
