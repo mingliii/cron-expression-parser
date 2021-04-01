@@ -10,6 +10,14 @@ public class NotvalidCronExpressionException extends RuntimeException{
         super(errorMsg(expression, reason));
     }
 
+    public NotvalidCronExpressionException(String errorMsg, Exception e) {
+        super(errorMsg, e);
+    }
+
+    public NotvalidCronExpressionException(String errorMsg) {
+        super(errorMsg);
+    }
+
     private static String errorMsg(String expression, String reason) {
         return String.format("Invalid expression '%s' - reason: %s", expression, reason);
     }

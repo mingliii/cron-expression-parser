@@ -2,7 +2,7 @@ package com.interview;
 
 import java.util.*;
 
-import static com.interview.CronExpression.FIELD_TYPE.*;
+import static com.interview.CronExpression.FieldType.*;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Arrays.copyOfRange;
@@ -11,12 +11,11 @@ import static java.util.Arrays.stream;
 public class CronExpression {
 
     // days in week - ignore the first one
-    private static final int[] _DAYS_OF_WEEK = new int[8];
-
+    private static final int[] _DAYS_OF_WEEK = new int[7];
     // 12 months - ignore the first one
-    private static final int[] _MONTHS = new int[13];
+    private static final int[] _MONTHS = new int[12];
     // 31 days in month - ignore the first one
-    private static final int[] _DAYS_OF_MONTH = new int[32];
+    private static final int[] _DAYS_OF_MONTH = new int[31];
     // 24 hours - ignore the first one
     private static final int[] _HOURS = new int[24];
     // 60 minutes in an hour
@@ -27,7 +26,7 @@ public class CronExpression {
         init(0, _HOURS, _MINUTES);
     }
 
-    enum FIELD_TYPE {
+    public enum FieldType {
         MINUTE,
         HOUR,
         DAY_OF_MONTH,
@@ -37,7 +36,7 @@ public class CronExpression {
     }
 
     // Mapping from field types to value ranges
-    private static final Map<FIELD_TYPE, int[]> VALUES_MAP = new HashMap<>(5) {
+    private static final Map<FieldType, int[]> VALUES_MAP = new HashMap<>(5) {
         {
             put(MINUTE, _MINUTES);
             put(HOUR, _HOURS);
@@ -47,14 +46,14 @@ public class CronExpression {
         }
     };
 
-    private final Map<FIELD_TYPE, String[]> parsedFields = new HashMap<>(6);
+    private final Map<FieldType, String[]> parsedFields = new HashMap<>(6);
     private String command;
     private final String expression;
 
-    private static void init(int start, int[]... values) {
+    private static void init(int offset, int[]... values) {
         for (int[] value : values) {
-            for (int i = start; i < value.length; i++) {
-                value[i] = i;
+            for (int i = 0; i < value.length; i++) {
+                value[i] = i + offset;
             }
         }
     }
@@ -75,19 +74,15 @@ public class CronExpression {
                 command = fields[type];
                 continue;
             }
-            parse(fields[type], FIELD_TYPE.values()[type]);
+            parse(fields[type], FieldType.values()[type]);
         }
     }
 
-    void parse(String field, FIELD_TYPE fieldType) {
+    void parse(String field, FieldType fieldType) {
 
         // Match all values given field type
         if (Objects.equals(field, "*")) {
             String[] range = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
-            if (fieldType != MINUTE && fieldType != HOUR) { // index needs to start from 1
-                range = copyOfRange(range, 1, range.length);
-            }
-
             parsedFields.put(fieldType, range);
             return;
         }
@@ -131,16 +126,22 @@ public class CronExpression {
     }
 
     // Parse filed like 1-5, 2-10
-    String[] parseRange(String field, FIELD_TYPE fieldType) {
+    String[] parseRange(String field, FieldType fieldType) {
         final String[] values = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
         if (startEnd.length != 2) {
             throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
         }
 
+        int offset = (fieldType == MINUTE || fieldType == HOUR) ? 0 : 1;
+
         try {
-            int start = Integer.parseInt(startEnd[0]);
-            int end = Integer.parseInt(startEnd[1]);
+            int start = Integer.parseInt(startEnd[0]) - offset;
+            int end = Integer.parseInt(startEnd[1]) - offset;
+
+            if (start > end || start < 0 || end >= VALUES_MAP.get(fieldType).length) {
+                throw new NotvalidCronExpressionException(fieldErrorMsg(field));
+            }
             return copyOfRange(values, start, end + 1);
         } catch (NumberFormatException e) {
             throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
@@ -148,7 +149,7 @@ public class CronExpression {
     }
 
     // Parse field like */5, 1/10
-    String[] parseInterval(String field, FIELD_TYPE fieldType) {
+    String[] parseInterval(String field, FieldType fieldType) {
         final int[] values = VALUES_MAP.get(fieldType);
         final String[] startEnd = field.split("/");
         if (startEnd.length != 2) {
@@ -162,23 +163,27 @@ public class CronExpression {
                 throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field));
             }
 
-            int mod = (fieldType == MINUTE || fieldType == HOUR) ? values.length : values.length - 1;
+            int mod = values.length;
             int mark = 0;
 
             List<Integer> results = new ArrayList<>();
 
             // [0...59]  1/45 => [1, 46, 31, 16]
+            results.add(start);
             for (int i = mark; i < values.length; i++) {
                 int val = values[i];
                 if (val % interval == 0) {
                     mark = (val + start) >= mod ? (val + start - mod) % mod : val + start;
-                    results.add(mark);
+                    if (!results.contains(mark)) {
+                        results.add(mark);
+                    }
                 }
             }
             while (!results.contains((mark + interval) % mod)) {
                 mark = (mark + interval) % mod;
                 results.add(mark);
             }
+
             return results.stream().map(String::valueOf).toArray(String[]::new);
         } catch (Exception e) {
             throw new NotvalidCronExpressionException(expression, fieldErrorMsg(field), e);
@@ -230,11 +235,16 @@ public class CronExpression {
     }
 
     public static void main(String[] args) {
-        if (args.length != 1) {
+        String input;
+        if (args.length == 1) {
             System.out.println("Please provide one cron express only!");
-            return;
+            System.out.println("Run an example: " + "*/45 0 1,2,15 1-5 1-5 /usr/bin/find");
+            input = args[0];
+        } else {
+            input = "*/45 0 2/31 * 1-5 /usr/bin/find";
         }
-        CronExpression cronExpression = new CronExpression(args[0]);
+
+        CronExpression cronExpression = new CronExpression(input);
         String output = cronExpression.describe();
         System.out.println(output);
     }
