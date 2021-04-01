@@ -12,7 +12,7 @@ public class ListParser extends FieldParser {
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType) {
+    public String[] doParse(String field, FieldType fieldType) {
         try {
             int[] range = VALUES_MAP.get(fieldType);
             String[] values = field.split(",");

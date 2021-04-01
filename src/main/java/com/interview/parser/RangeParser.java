@@ -19,7 +19,7 @@ public class RangeParser extends FieldParser {
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType) {
+    public String[] doParse(String field, FieldType fieldType) {
         final String[] values = stream(VALUES_MAP.get(fieldType)).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
 

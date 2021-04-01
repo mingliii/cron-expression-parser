@@ -15,7 +15,7 @@ public class IntervalParser extends FieldParser {
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType) {
+    public String[] doParse(String field, FieldType fieldType) {
         int[] range = VALUES_MAP.get(fieldType);
         final String[] startEnd = field.split("/");
 

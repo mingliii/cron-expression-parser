@@ -52,9 +52,33 @@ public abstract class FieldParser {
         }
     };
 
+    /**
+     * Determine if a parser should be matched to do parse. A match doesn't mean success of parsing.
+     * @param field field to match
+     * @param fieldType field type
+     * @return if a parse is matched
+     */
     public abstract boolean match(String field, FieldType fieldType) ;
 
-    public abstract String[] parse(String field, FieldType fieldType);
+    /**
+     * Template method to make sure a parser is matched before parsing
+     * @param field field to match and parse
+     * @param fieldType field type
+     * @return a list of parsed values
+     */
+    public String[] parse(String field, FieldType fieldType) {
+        assert match(field, fieldType) : "Field parser must match";
+
+        return doParse(field, fieldType);
+    }
+
+    /**
+     * Parse the given field with its type
+     * @param field field to parse
+     * @param fieldType field type
+     * @return a list of parsed values
+     */
+    abstract String[] doParse(String field, FieldType fieldType);
 
     String fieldErrorMsg(String field) {
         return format("The field '%s' is not valid", field);

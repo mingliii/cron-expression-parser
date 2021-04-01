@@ -17,7 +17,7 @@ public class CronExpressionParser {
                 new RangeParser(),
                 new IntervalParser(),
                 new ListParser(),
-                new SimpleParser()
+                new DefaultParser()
         );
     }
 

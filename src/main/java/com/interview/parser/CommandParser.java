@@ -10,7 +10,7 @@ public class CommandParser extends FieldParser{
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType) {
+    public String[] doParse(String field, FieldType fieldType) {
         return new String[]{field};
     }
 }

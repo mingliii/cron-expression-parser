@@ -4,15 +4,20 @@ import com.interview.NotvalidCronExpressionException;
 
 import java.util.Arrays;
 
-public class SimpleParser extends FieldParser {
+import static com.interview.parser.FieldParser.FieldType.COMMAND;
+
+/**
+ * This parser should be placed at the last as it will match everything except command
+ */
+public class DefaultParser extends FieldParser {
 
     @Override
     public boolean match(String field, FieldType fieldType) {
-        return true;
+        return fieldType != COMMAND;
     }
 
     @Override
-    public String[] parse(String field, FieldType fieldType) {
+    public String[] doParse(String field, FieldType fieldType) {
         int[] ranges = VALUES_MAP.get(fieldType);
 
         try {
