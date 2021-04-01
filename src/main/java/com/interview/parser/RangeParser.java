@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.interview.parser.FieldParser.FieldType.COMMAND;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Arrays.stream;
 
@@ -13,7 +14,7 @@ public class RangeParser extends FieldParser {
 
     @Override
     public boolean match(String field, FieldType fieldType) {
-        return field.contains("-");
+        return field.contains("-") && fieldType != COMMAND;
     }
 
     @Override
@@ -25,7 +26,6 @@ public class RangeParser extends FieldParser {
         if (startEnd.length != 2) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field));
         }
-
 
         try {
             int offset = values[0].equals("0") ? 0 : 1;

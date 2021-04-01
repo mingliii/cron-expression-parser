@@ -3,9 +3,11 @@ package com.interview.parser;
 import com.interview.NotValidCronExpressionException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.stream;
 
 public class IntervalParser extends FieldParser {
 
@@ -25,26 +27,27 @@ public class IntervalParser extends FieldParser {
 
         try {
             int start;
-            if (Objects.equals(startEnd[0], "*")) {
+            if (Objects.equals(startEnd[0].trim(), "*")) {
                 start = range[0];
             } else {
-                start = Integer.parseInt(startEnd[0]);
-                if (Arrays.stream(range).noneMatch(val -> val == start)) {
+                start = parseInt(startEnd[0].trim());
+                if (stream(range).noneMatch(val -> val == start)) {
                     throw new NotValidCronExpressionException(fieldErrorMsg(field));
                 }
             }
 
-            int interval = Integer.parseInt(startEnd[1]);
+            int interval = parseInt(startEnd[1].trim());
             if (start > range[range.length - 1] || interval < 1) {
                 throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
-            int mod = range.length;
-            int mark = 0;
-
             List<Integer> results = new ArrayList<>();
 
+            // handle cases like below
             // [0...59]  1/45 => [1, 46, 31, 16]
+            // [0...59]  0/15 => [0, 15, 30, 45]
+            int mark = 0;
+            int mod = range.length;
             results.add(start);
             for (int i = mark; i < range.length; i++) {
                 int val = range[i];
