@@ -33,7 +33,7 @@ public class IntervalParserTest {
 
     @Test
     public void testParse() {
-        assertEquals(range(0, 59), intervalParser.parse("*/1", MINUTE));
+        assertEquals(range(0, 59), intervalParser.parse("*/ 1", MINUTE));
         assertEquals(range(0, 23), intervalParser.parse("*/1", HOUR));
         assertEquals(range(1, 31), intervalParser.parse("*/1", DAY_OF_MONTH));
         assertEquals(range(1, 12), intervalParser.parse("*/1", MONTH));
@@ -80,6 +80,11 @@ public class IntervalParserTest {
     @Test(expected = NotValidCronExpressionException.class)
     public void testParseInvalidFieldFormat() {
         intervalParser.parse("1/", MINUTE);
+    }
+
+    @Test(expected = NotValidCronExpressionException.class)
+    public void testParseInvalidFieldFormat_CharacterNotAcceptable() {
+        intervalParser.parse("a/", MINUTE);
     }
 
     @Test(expected = NotValidCronExpressionException.class)
