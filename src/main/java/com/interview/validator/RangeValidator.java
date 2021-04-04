@@ -2,6 +2,7 @@ package com.interview.validator;
 
 import com.interview.NotValidCronExpressionException;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -19,6 +20,14 @@ public class RangeValidator {
      */
     public void validate(String field, int[] range, int ...values) {
         if(values.length > 0 && stream(values).allMatch(value -> stream(range).anyMatch(val -> Objects.equals(value, val)))) {
+            return;
+        }
+
+        throw new NotValidCronExpressionException(fieldErrorMsg(field));
+    }
+
+    public <T> void validate(String field, T[] range, T ...values) {
+        if(values.length > 0 && stream(values).allMatch(value -> Arrays.asList(range).contains(value))) {
             return;
         }
 
