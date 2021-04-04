@@ -2,10 +2,6 @@ package com.interview;
 
 public class NotValidCronExpressionException extends RuntimeException{
 
-    public NotValidCronExpressionException(String expression, String reason, Exception e) {
-        super(errorMsg(expression, reason), e);
-    }
-
     public NotValidCronExpressionException(String expression, String reason) {
         super(errorMsg(expression, reason));
     }
