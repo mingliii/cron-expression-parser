@@ -38,9 +38,7 @@ public class IntervalParser extends FieldParser {
                 start = range[0];
             } else {
                 start = parseInt(startEnd[0].trim());
-                if (!rangeValidator.validate(range, start)) {
-                    throw new NotValidCronExpressionException(fieldErrorMsg(field));
-                }
+                rangeValidator.validate(field, range, start);
             }
 
             int interval = parseInt(startEnd[1].trim()) % range.length;

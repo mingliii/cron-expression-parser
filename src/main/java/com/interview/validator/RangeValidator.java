@@ -1,8 +1,11 @@
 package com.interview.validator;
 
+import com.interview.NotValidCronExpressionException;
+
 import java.util.Arrays;
 import java.util.Objects;
 
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
 /**
@@ -14,11 +17,23 @@ public class RangeValidator {
     /**
      * Validate all given values that fall into the range
      */
-    public boolean validate(int[] range, int ...values) {
-        return values.length > 0 && stream(values).allMatch(value -> stream(range).anyMatch(val -> Objects.equals(value, val)));
+    public void validate(String field, int[] range, int ...values) {
+        if(values.length > 0 && stream(values).allMatch(value -> stream(range).anyMatch(val -> Objects.equals(value, val)))) {
+            return;
+        }
+
+        throw new NotValidCronExpressionException(fieldErrorMsg(field));
     }
 
-    public <T> boolean validate(T[] range, T ...values) {
-        return values.length > 0 && stream(values).allMatch(value -> Arrays.asList(range).contains(value));
+    public <T> void validate(String field, T[] range, T ...values) {
+        if (values.length > 0 && stream(values).allMatch(value -> Arrays.asList(range).contains(value))) {
+            return;
+        }
+
+        throw new NotValidCronExpressionException(fieldErrorMsg(field));
+    }
+
+    String fieldErrorMsg(String field) {
+        return format("The field '%s' is not valid", field);
     }
 }

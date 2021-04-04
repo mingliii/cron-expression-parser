@@ -21,13 +21,11 @@ public class DefaultParser extends FieldParser {
     @Override
     public List<String> doParse(String field, FieldType fieldType) {
         try {
-            int[] ranges = VALUES_MAP.get(fieldType);
+            int[] range = VALUES_MAP.get(fieldType);
 
             int val = parseInt(field);
 
-            if (!rangeValidator.validate(ranges, val)) {
-                throw new NotValidCronExpressionException(fieldErrorMsg(field));
-            }
+            rangeValidator.validate(field, range, val);
 
             return of(String.valueOf(val));
         } catch (NumberFormatException e) {

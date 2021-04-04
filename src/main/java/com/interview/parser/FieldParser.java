@@ -15,6 +15,7 @@ public abstract class FieldParser {
 
     // days in week - ignore the first one
     private static final int[] _DAYS_OF_WEEK = new int[7];
+
     // 12 months - ignore the first one
     private static final int[] _MONTHS = new int[12];
     // 31 days in month - ignore the first one

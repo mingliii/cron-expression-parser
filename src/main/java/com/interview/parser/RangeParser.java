@@ -32,9 +32,7 @@ public class RangeParser extends FieldParser {
             int start = Integer.parseInt(startEnd[0]);
             int end = Integer.parseInt(startEnd[1]);
 
-            if (!rangeValidator.validate(range, start, end)) {
-                throw new NotValidCronExpressionException(fieldErrorMsg(field));
-            }
+            rangeValidator.validate(field, range, start, end);
 
             // Handle the case like 23-2
             if (start > end) {
