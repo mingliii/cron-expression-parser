@@ -6,16 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.interview.parser.FieldParser.FieldType.*;
 import static java.lang.Integer.parseInt;
+import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
 
 public class IntervalParser extends FieldParser {
 
     @Override
     public boolean match(String field, FieldType fieldType) {
-        return field.contains("/");
+        return field.contains("/") && fieldType != COMMAND;
     }
 
+    // handle cases like below
+    // [0...59]  1/45 => [1, 46, 31, 16]
+    // [0...59]  0/15 => [0, 15, 30, 45]
+    // [1...12]  */1 => [1, 2 ... 12]
+    // [1...7]  */1 => [1, 2 ... 7]
     @Override
     public String[] doParse(String field, FieldType fieldType) {
         int[] range = VALUES_MAP.get(fieldType);
@@ -36,34 +43,21 @@ public class IntervalParser extends FieldParser {
                 }
             }
 
-            int interval = parseInt(startEnd[1].trim());
-            if (start > range[range.length - 1] || interval < 1) {
+            int interval = parseInt(startEnd[1].trim()) % range.length;
+            if (start > range[range.length - 1]) {
                 throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
-            List<Integer> results = new ArrayList<>();
-
-            // handle cases like below
-            // [0...59]  1/45 => [1, 46, 31, 16]
-            // [0...59]  0/15 => [0, 15, 30, 45]
-            int mark = 0;
-            int mod = range.length;
-            results.add(start);
-            for (int i = mark; i < range.length; i++) {
-                int val = range[i];
-                if (val % interval == 0) {
-                    mark = (val + start) >= mod ? (val + start - mod) % mod : val + start;
-                    if (!results.contains(mark)) {
-                        results.add(mark);
-                    }
-                }
-            }
-            while (!results.contains((mark + interval) % mod)) {
-                mark = (mark + interval) % mod;
-                results.add(mark);
+            List<String> results = new ArrayList<>();
+            int offset = fieldType == MINUTE || fieldType == HOUR ? 0 : 1;
+            int current = start - offset;
+            while (!results.contains(valueOf(range[current]))) {
+                results.add(valueOf(range[current]));
+                current = current + interval;
+                current = current >= range.length ? (current - range.length) : current;
             }
 
-            return results.stream().map(String::valueOf).toArray(String[]::new);
+            return results.toArray(String[]::new);
         } catch (Exception e) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }
