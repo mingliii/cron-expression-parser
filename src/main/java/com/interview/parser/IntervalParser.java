@@ -38,15 +38,12 @@ public class IntervalParser extends FieldParser {
                 start = range[0];
             } else {
                 start = parseInt(startEnd[0].trim());
-                if (stream(range).noneMatch(val -> val == start)) {
+                if (!rangeValidator.validate(range, start)) {
                     throw new NotValidCronExpressionException(fieldErrorMsg(field));
                 }
             }
 
             int interval = parseInt(startEnd[1].trim()) % range.length;
-            if (start > range[range.length - 1]) {
-                throw new NotValidCronExpressionException(fieldErrorMsg(field));
-            }
 
             List<String> results = new ArrayList<>();
             int offset = fieldType == MINUTE || fieldType == HOUR ? 0 : 1;
