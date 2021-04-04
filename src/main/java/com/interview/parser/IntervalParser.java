@@ -24,7 +24,7 @@ public class IntervalParser extends FieldParser {
     // [1...12]  */1 => [1, 2 ... 12]
     // [1...7]  */1 => [1, 2 ... 7]
     @Override
-    public String[] doParse(String field, FieldType fieldType) {
+    public List<String> doParse(String field, FieldType fieldType) {
         int[] range = VALUES_MAP.get(fieldType);
         final String[] startEnd = field.split("/");
 
@@ -57,7 +57,7 @@ public class IntervalParser extends FieldParser {
                 current = current >= range.length ? (current - range.length) : current;
             }
 
-            return results.toArray(String[]::new);
+            return results;
         } catch (Exception e) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }

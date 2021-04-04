@@ -73,7 +73,7 @@ public abstract class FieldParser {
      * @param fieldType field type
      * @return a list of parsed values
      */
-    public String[] parse(String field, FieldType fieldType) {
+    public List<String> parse(String field, FieldType fieldType) {
         assert match(field, fieldType) : "Field parser must match";
 
         return doParse(field, fieldType);
@@ -85,7 +85,7 @@ public abstract class FieldParser {
      * @param fieldType field type
      * @return a list of parsed values
      */
-    abstract String[] doParse(String field, FieldType fieldType);
+    abstract List<String> doParse(String field, FieldType fieldType);
 
     String fieldErrorMsg(String field) {
         return format("The field '%s' is not valid", field);

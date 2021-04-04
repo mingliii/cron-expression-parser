@@ -1,10 +1,12 @@
 package com.interview.parser;
 
 import com.interview.NotValidCronExpressionException;
-import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.interview.parser.FieldParser.FieldType.*;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -16,15 +18,15 @@ public class DefaultParserTest {
 
     @Test
     public void testMatch() {
-        Assert.assertTrue(defaultParser.match("5", MINUTE));
-        Assert.assertTrue(defaultParser.match("a", HOUR));
+        assertTrue(defaultParser.match("5", MINUTE));
+        assertTrue(defaultParser.match("a", HOUR));
 
-        Assert.assertFalse(defaultParser.match("/usr/local/run", COMMAND));
-        Assert.assertFalse(defaultParser.match("1-5", DAY_OF_MONTH));
-        Assert.assertFalse(defaultParser.match("1/5", MINUTE));
-        Assert.assertFalse(defaultParser.match("1,5", MINUTE));
-        Assert.assertFalse(defaultParser.match("*", MINUTE));
-        Assert.assertFalse(defaultParser.match("?", MINUTE));
+        assertFalse(defaultParser.match("/usr/local/run", COMMAND));
+        assertFalse(defaultParser.match("1-5", DAY_OF_MONTH));
+        assertFalse(defaultParser.match("1/5", MINUTE));
+        assertFalse(defaultParser.match("1,5", MINUTE));
+        assertFalse(defaultParser.match("*", MINUTE));
+        assertFalse(defaultParser.match("?", MINUTE));
     }
 
     @Test(expected = NotValidCronExpressionException.class)
@@ -54,12 +56,12 @@ public class DefaultParserTest {
 
     @Test
     public void testParseSuccess() {
-        String[] expected = new String[]{"7"};
+        List<String> expected = List.of("7");
 
-        Assert.assertArrayEquals(expected, defaultParser.parse("7", MINUTE));
-        Assert.assertArrayEquals(expected, defaultParser.parse("7", HOUR));
-        Assert.assertArrayEquals(expected, defaultParser.parse("7", DAY_OF_MONTH));
-        Assert.assertArrayEquals(expected, defaultParser.parse("7", MONTH));
-        Assert.assertArrayEquals(expected, defaultParser.parse("7", DAY_OF_WEEK));
+        assertEquals(expected, defaultParser.parse("7", MINUTE));
+        assertEquals(expected, defaultParser.parse("7", HOUR));
+        assertEquals(expected, defaultParser.parse("7", DAY_OF_MONTH));
+        assertEquals(expected, defaultParser.parse("7", MONTH));
+        assertEquals(expected, defaultParser.parse("7", DAY_OF_WEEK));
     }
 }

@@ -2,8 +2,11 @@ package com.interview.parser;
 
 import com.interview.NotValidCronExpressionException;
 
+import java.util.List;
+
 import static com.interview.parser.FieldParser.FieldType.COMMAND;
 import static java.lang.Integer.parseInt;
+import static java.util.List.of;
 
 /**
  * This parser should be placed at the last as it will match everything except command
@@ -16,7 +19,7 @@ public class DefaultParser extends FieldParser {
     }
 
     @Override
-    public String[] doParse(String field, FieldType fieldType) {
+    public List<String> doParse(String field, FieldType fieldType) {
         try {
             int[] ranges = VALUES_MAP.get(fieldType);
 
@@ -26,7 +29,7 @@ public class DefaultParser extends FieldParser {
                 throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
-            return new String[]{String.valueOf(val)};
+            return of(String.valueOf(val));
         } catch (NumberFormatException e) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }

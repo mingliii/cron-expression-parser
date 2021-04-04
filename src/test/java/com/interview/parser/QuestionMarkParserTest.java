@@ -1,10 +1,11 @@
 package com.interview.parser;
 
 import com.interview.NotValidCronExpressionException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static com.interview.parser.FieldParser.FieldType.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ming Li
@@ -15,25 +16,25 @@ public class QuestionMarkParserTest {
 
     @Test
     public void match() {
-        Assert.assertTrue(questionMarkParser.match("?", DAY_OF_WEEK));
-        Assert.assertTrue(questionMarkParser.match("?", DAY_OF_MONTH));
-        Assert.assertTrue(questionMarkParser.match("?", MINUTE));
-        Assert.assertTrue(questionMarkParser.match("?", HOUR));
-        Assert.assertTrue(questionMarkParser.match("?", MONTH));
-        Assert.assertTrue(questionMarkParser.match("?", COMMAND));
+        assertTrue(questionMarkParser.match("?", DAY_OF_WEEK));
+        assertTrue(questionMarkParser.match("?", DAY_OF_MONTH));
+        assertTrue(questionMarkParser.match("?", MINUTE));
+        assertTrue(questionMarkParser.match("?", HOUR));
+        assertTrue(questionMarkParser.match("?", MONTH));
+        assertTrue(questionMarkParser.match("?", COMMAND));
 
-        Assert.assertFalse(questionMarkParser.match("*", DAY_OF_MONTH));
-        Assert.assertFalse(questionMarkParser.match("-", DAY_OF_MONTH));
-        Assert.assertFalse(questionMarkParser.match("/", DAY_OF_MONTH));
-        Assert.assertFalse(questionMarkParser.match(",", DAY_OF_MONTH));
-        Assert.assertFalse(questionMarkParser.match("5", DAY_OF_MONTH));
-        Assert.assertFalse(questionMarkParser.match("a", DAY_OF_MONTH));
+        assertFalse(questionMarkParser.match("*", DAY_OF_MONTH));
+        assertFalse(questionMarkParser.match("-", DAY_OF_MONTH));
+        assertFalse(questionMarkParser.match("/", DAY_OF_MONTH));
+        assertFalse(questionMarkParser.match(",", DAY_OF_MONTH));
+        assertFalse(questionMarkParser.match("5", DAY_OF_MONTH));
+        assertFalse(questionMarkParser.match("a", DAY_OF_MONTH));
     }
 
     @Test
     public void testParseSuccess() {
-        Assert.assertArrayEquals(new String[]{}, questionMarkParser.parse("?", DAY_OF_WEEK));
-        Assert.assertArrayEquals(new String[]{}, questionMarkParser.parse("?", DAY_OF_MONTH));
+        assertTrue(questionMarkParser.parse("?", DAY_OF_WEEK).isEmpty());
+        assertTrue(questionMarkParser.parse("?", DAY_OF_MONTH).isEmpty());
     }
 
     @Test(expected = NotValidCronExpressionException.class)

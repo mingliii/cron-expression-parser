@@ -1,9 +1,12 @@
 package com.interview.parser;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.interview.parser.FieldParser.FieldType.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Ming Li
@@ -14,59 +17,59 @@ public class StarParserTest {
 
     @Test
     public void testMatch() {
-        Assert.assertTrue(starParser.match("*", MINUTE));
-        Assert.assertTrue(starParser.match("*", HOUR));
-        Assert.assertTrue(starParser.match("*", DAY_OF_MONTH));
-        Assert.assertTrue(starParser.match("*", MONTH));
-        Assert.assertTrue(starParser.match("*", DAY_OF_WEEK));
+        assertTrue(starParser.match("*", MINUTE));
+        assertTrue(starParser.match("*", HOUR));
+        assertTrue(starParser.match("*", DAY_OF_MONTH));
+        assertTrue(starParser.match("*", MONTH));
+        assertTrue(starParser.match("*", DAY_OF_WEEK));
 
-        Assert.assertFalse(starParser.match("*", COMMAND));
-        Assert.assertFalse(starParser.match("**", COMMAND));
-        Assert.assertFalse(starParser.match("5", COMMAND));
-        Assert.assertFalse(starParser.match("L", COMMAND));
-        Assert.assertFalse(starParser.match(",", MINUTE));
-        Assert.assertFalse(starParser.match("-", MINUTE));
-        Assert.assertFalse(starParser.match("/", MINUTE));
-        Assert.assertFalse(starParser.match("?", MINUTE));
+        assertFalse(starParser.match("*", COMMAND));
+        assertFalse(starParser.match("**", COMMAND));
+        assertFalse(starParser.match("5", COMMAND));
+        assertFalse(starParser.match("L", COMMAND));
+        assertFalse(starParser.match(",", MINUTE));
+        assertFalse(starParser.match("-", MINUTE));
+        assertFalse(starParser.match("/", MINUTE));
+        assertFalse(starParser.match("?", MINUTE));
     }
 
     @Test
     public void testParse() {
-        String[] expected;
+        List<String> expected;
 
-        expected = new String[60];
+        expected = new ArrayList<>(60);
         for (int i = 0; i < 60; i++) {
-            expected[i] = String.valueOf(i);
+            expected.add(String.valueOf(i));
         }
-        String[] minutes = starParser.parse("*", MINUTE);
-        Assert.assertArrayEquals(expected, minutes);
+        List<String> minutes = starParser.parse("*", MINUTE);
+        assertEquals(expected, minutes);
 
-        expected = new String[24];
+        expected = new ArrayList<>(24);
         for (int i = 0; i < 24; i++) {
-            expected[i] = String.valueOf(i);
+            expected.add(String.valueOf(i));
         }
-        String[] hours = starParser.parse("*", HOUR);
-        Assert.assertArrayEquals(expected, hours);
+        List<String> hours = starParser.parse("*", HOUR);
+        assertEquals(expected, hours);
 
-        expected = new String[31];
+        expected = new ArrayList<>(31);
         for (int i = 0; i < 31; i++) {
-            expected[i] = String.valueOf(i + 1);
+            expected.add(String.valueOf(i+1));
         }
-        String[] daysOfMonth = starParser.parse("*", DAY_OF_MONTH);
-        Assert.assertArrayEquals(expected, daysOfMonth);
+        List<String> daysOfMonth = starParser.parse("*", DAY_OF_MONTH);
+        assertEquals(expected, daysOfMonth);
 
-        expected = new String[12];
+        expected = new ArrayList<>(12);
         for (int i = 0; i < 12; i++) {
-            expected[i] = String.valueOf(i + 1);
+            expected.add(String.valueOf(i+1));
         }
-        String[] months = starParser.parse("*", MONTH);
-        Assert.assertArrayEquals(expected, months);
+        List<String> months = starParser.parse("*", MONTH);
+        assertEquals(expected, months);
 
-        expected = new String[7];
+        expected = new ArrayList<>(7);
         for (int i = 0; i < 7; i++) {
-            expected[i] = String.valueOf(i + 1);
+            expected.add(String.valueOf(i+1));
         }
-        String[] daysOfWeek = starParser.parse("*", DAY_OF_WEEK);
-        Assert.assertArrayEquals(expected, daysOfWeek);
+        List<String> daysOfWeek = starParser.parse("*", DAY_OF_WEEK);
+        assertEquals(expected, daysOfWeek);
     }
 }

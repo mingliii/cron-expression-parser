@@ -1,9 +1,11 @@
 package com.interview.parser;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.interview.parser.FieldParser.FieldType.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Ming Li
@@ -14,19 +16,19 @@ public class CommandParserTest {
 
     @Test
     public void testMatch() {
-        Assert.assertTrue(commandParser.match("any", COMMAND));
-        Assert.assertFalse(commandParser.match("any", MINUTE));
-        Assert.assertFalse(commandParser.match("any", HOUR));
-        Assert.assertFalse(commandParser.match("any", DAY_OF_MONTH));
-        Assert.assertFalse(commandParser.match("any", MONTH));
-        Assert.assertFalse(commandParser.match("any", DAY_OF_WEEK));
+        assertTrue(commandParser.match("any", COMMAND));
+        assertFalse(commandParser.match("any", MINUTE));
+        assertFalse(commandParser.match("any", HOUR));
+        assertFalse(commandParser.match("any", DAY_OF_MONTH));
+        assertFalse(commandParser.match("any", MONTH));
+        assertFalse(commandParser.match("any", DAY_OF_WEEK));
     }
 
     @Test
     public void testParse() {
-        String[] expected = new String[]{"any"};
-        String[] actual = commandParser.parse("any", COMMAND);
+        List<String> expected = List.of("any");
+        List<String> actual = commandParser.parse("any", COMMAND);
 
-        Assert.assertArrayEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

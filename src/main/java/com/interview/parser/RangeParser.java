@@ -18,7 +18,7 @@ public class RangeParser extends FieldParser {
     }
 
     @Override
-    public String[] doParse(String field, FieldType fieldType) {
+    public List<String> doParse(String field, FieldType fieldType) {
         int[] range = VALUES_MAP.get(fieldType);
         final String[] values = stream(range).mapToObj(String::valueOf).toArray(String[]::new);
         String[] startEnd = field.split("-");
@@ -41,10 +41,9 @@ public class RangeParser extends FieldParser {
                 List<String> results = new ArrayList<>(Arrays.asList(copyOfRange(values, start - offset, values.length)));
                 List<String> rest = new ArrayList<>(Arrays.asList(copyOfRange(values, 0, end + 1 - offset)));
                 results.addAll(rest);
-                return  results.toArray(String[]::new);
+                return  results;
             }
-
-            return copyOfRange(values, start - offset, end + 1 - offset);
+            return Arrays.asList(values).subList(start - offset, end + 1 - offset);
         } catch (NumberFormatException e) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field));
         }

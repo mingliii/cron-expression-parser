@@ -2,6 +2,9 @@ package com.interview.parser;
 
 import com.interview.NotValidCronExpressionException;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.interview.parser.FieldParser.FieldType.COMMAND;
 import static java.util.Arrays.stream;
 
@@ -13,7 +16,7 @@ public class ListParser extends FieldParser {
     }
 
     @Override
-    public String[] doParse(String field, FieldType fieldType) {
+    public List<String> doParse(String field, FieldType fieldType) {
         try {
             int[] range = VALUES_MAP.get(fieldType);
             String[] values = field.split(",");
@@ -24,7 +27,7 @@ public class ListParser extends FieldParser {
                 throw new NotValidCronExpressionException(fieldErrorMsg(field));
             }
 
-            return values;
+            return Arrays.asList(values);
         } catch (NumberFormatException e) {
             throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }

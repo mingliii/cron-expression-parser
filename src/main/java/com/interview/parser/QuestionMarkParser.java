@@ -2,10 +2,13 @@ package com.interview.parser;
 
 import com.interview.NotValidCronExpressionException;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static com.interview.parser.FieldParser.FieldType.DAY_OF_MONTH;
 import static com.interview.parser.FieldParser.FieldType.DAY_OF_WEEK;
+import static java.util.Collections.emptyList;
 
 public class QuestionMarkParser extends FieldParser {
 
@@ -15,9 +18,9 @@ public class QuestionMarkParser extends FieldParser {
     }
 
     @Override
-    public String[] doParse(String field, FieldType fieldType) {
+    public List<String> doParse(String field, FieldType fieldType) {
         if(fieldType == DAY_OF_MONTH || fieldType == DAY_OF_WEEK) {
-            return new String[0];
+            return emptyList();
         }
 
         throw new NotValidCronExpressionException(fieldErrorMsg(field));

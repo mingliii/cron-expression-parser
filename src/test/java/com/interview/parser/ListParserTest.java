@@ -1,10 +1,12 @@
 package com.interview.parser;
 
 import com.interview.NotValidCronExpressionException;
-import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 import static com.interview.parser.FieldParser.FieldType.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Ming Li
@@ -15,34 +17,34 @@ public class ListParserTest {
 
     @Test
     public void testMatch() {
-        Assert.assertTrue(listParser.match("1,5,10", MINUTE));
-        Assert.assertTrue(listParser.match("a,b,c", HOUR));
-        Assert.assertTrue(listParser.match(",", DAY_OF_WEEK));
+        assertTrue(listParser.match("1,5,10", MINUTE));
+        assertTrue(listParser.match("a,b,c", HOUR));
+        assertTrue(listParser.match(",", DAY_OF_WEEK));
 
-        Assert.assertFalse(listParser.match("a,b,c", COMMAND));
-        Assert.assertFalse(listParser.match("5", HOUR));
-        Assert.assertFalse(listParser.match("c", MONTH));
+        assertFalse(listParser.match("a,b,c", COMMAND));
+        assertFalse(listParser.match("5", HOUR));
+        assertFalse(listParser.match("c", MONTH));
     }
 
     @Test
     public void parse() {
 
-        String[] expected;
+        List<String> expected;
 
-        expected = new String[]{"1", "5", "10"};
-        Assert.assertArrayEquals(expected, listParser.parse("1,  5,10", MINUTE));
+        expected = List.of("1", "5", "10");
+        assertEquals(expected, listParser.parse("1,  5,10", MINUTE));
 
-        expected = new String[]{"0", "5", "23"};
-        Assert.assertArrayEquals(expected, listParser.parse("0,5,23", HOUR));
+        expected = List.of("0", "5", "23");
+        assertEquals(expected, listParser.parse("0,5,23", HOUR));
 
-        expected = new String[]{"1", "5", "31"};
-        Assert.assertArrayEquals(expected, listParser.parse("1, 5, 31", DAY_OF_MONTH));
+        expected = List.of("1", "5", "31");
+        assertEquals(expected, listParser.parse("1, 5, 31", DAY_OF_MONTH));
 
-        expected = new String[]{"1", "5", "12"};
-        Assert.assertArrayEquals(expected, listParser.parse("1, 5, 12", MONTH));
+        expected = List.of("1", "5", "12");
+        assertEquals(expected, listParser.parse("1, 5, 12", MONTH));
 
-        expected = new String[]{"1", "5", "7"};
-        Assert.assertArrayEquals(expected, listParser.parse("1, 5, 7", DAY_OF_WEEK));
+        expected = List.of("1", "5", "7");
+        assertEquals(expected, listParser.parse("1, 5, 7", DAY_OF_WEEK));
     }
 
     @Test(expected = NotValidCronExpressionException.class)

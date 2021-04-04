@@ -11,33 +11,33 @@ import static java.lang.String.join;
 
 public class CronExpressionResults {
 
-    private final Map<FieldType, String[]> parsedFields = new HashMap<>(6);
+    private final Map<FieldType, List<String>> parsedFields = new HashMap<>(6);
 
-    public String[] getMinutes() {
+    public List<String> getMinutes() {
         return parsedFields.get(MINUTE);
     }
 
-    public String[] getHours() {
+    public List<String> getHours() {
         return parsedFields.get(HOUR);
     }
 
-    public String[] getDaysOfMonth() {
+    public List<String> getDaysOfMonth() {
         return parsedFields.get(DAY_OF_MONTH);
     }
 
-    public String[] getMonths() {
+    public List<String> getMonths() {
         return parsedFields.get(MONTH);
     }
 
-    public String[] getDaysOfWeek() {
+    public List<String> getDaysOfWeek() {
         return parsedFields.get(DAY_OF_WEEK);
     }
 
     public String getCommand() {
-        return parsedFields.get(COMMAND)[0];
+        return parsedFields.get(COMMAND).get(0);
     }
 
-    public void set(FieldType fieldType, String[] values) {
+    public void set(FieldType fieldType, List<String> values) {
         parsedFields.put(fieldType, values);
     }
 
