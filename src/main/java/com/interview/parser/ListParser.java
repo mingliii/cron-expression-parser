@@ -5,7 +5,7 @@ import com.interview.NotValidCronExpressionException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.interview.parser.FieldParser.FieldType.COMMAND;
+import static com.interview.parser.FieldParser.FieldType.*;
 import static java.util.Arrays.stream;
 
 public class ListParser extends FieldParser {
@@ -17,11 +17,10 @@ public class ListParser extends FieldParser {
 
     @Override
     public List<String> doParse(String field, FieldType fieldType) {
+        int[] range = VALUES_MAP.get(fieldType);
+        String[] values = stream(field.split(",")).map(String::trim).toArray(String[]::new);
         try {
-            int[] range = VALUES_MAP.get(fieldType);
-            String[] values = field.split(",");
-            values = stream(values).mapToInt(val -> Integer.parseInt(val.trim())).distinct().mapToObj(String::valueOf).toArray(String[]::new);
-
+            values = stream(values).mapToInt(Integer::parseInt).distinct().mapToObj(String::valueOf).toArray(String[]::new);
             int[] intValues = stream(values).mapToInt(val -> Integer.parseInt(val.trim())).distinct().toArray();
             if (!rangeValidator.validate(range, intValues)) {
                 throw new NotValidCronExpressionException(fieldErrorMsg(field));
