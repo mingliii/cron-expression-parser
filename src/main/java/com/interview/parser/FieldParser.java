@@ -15,6 +15,8 @@ public abstract class FieldParser {
 
     // days in week - ignore the first one
     private static final int[] _DAYS_OF_WEEK = new int[7];
+    protected static final List<String> _DAYS_OF_WEEK_DDD = List.of("SUN","MON","TUE","WED","THU","FRI","SAT");
+    protected static final List<String> _MONTH_MMM = List.of("JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC");
 
     // 12 months - ignore the first one
     private static final int[] _MONTHS = new int[12];

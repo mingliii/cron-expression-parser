@@ -25,7 +25,13 @@ public class ListParser extends FieldParser {
             rangeValidator.validate(field, range, intValues);
             return asList(values);
         } catch (NumberFormatException e) {
-
+            if (fieldType == DAY_OF_WEEK) {
+                rangeValidator.validate(field, _DAYS_OF_WEEK_DDD, values);
+                return asList(values);
+            } else if (fieldType == DAY_OF_MONTH) {
+                rangeValidator.validate(field, _DAYS_OF_WEEK_DDD, values);
+                return asList(values);
+            }
 
             throw new NotValidCronExpressionException(fieldErrorMsg(field), e);
         }
